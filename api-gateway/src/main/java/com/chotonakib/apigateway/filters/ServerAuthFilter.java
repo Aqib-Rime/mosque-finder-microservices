@@ -5,6 +5,7 @@ import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ServerWebExchange;
@@ -30,7 +31,8 @@ public class ServerAuthFilter implements GatewayFilter {
                 .exchangeToMono(response -> {
                     if (response.statusCode().is2xxSuccessful()) {
                         // if response, pass the request to the next filter in the chain
-                        return chain.filter(exchange);
+                        ServerHttpRequest newRequest = exchange.getRequest().mutate().headers(httpHeaders -> httpHeaders.remove(HttpHeaders.AUTHORIZATION)).build();
+                        return chain.filter(exchange.mutate().request(newRequest).build());
                     } else {
                         // if not response, return a 401 Unauthorized response
                         exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
