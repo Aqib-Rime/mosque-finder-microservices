@@ -3,6 +3,7 @@ package com.chotonakib.mosqueservice.services;
 import com.chotonakib.mosqueservice.models.entity.AddressEntity;
 import com.chotonakib.mosqueservice.repository.AddressEntityRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -12,6 +13,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AddressEntityService {
     private final AddressEntityRepository addressEntityRepository;
     @Value("${no.mosque.radius.range}")
@@ -23,6 +25,7 @@ public class AddressEntityService {
             return Optional.empty();
         }
         addressEntityRepository.save(address);
+        log.info("Saved address to db with address string : {}", address.getAddress());
         return Optional.of(new Object());
     }
 
