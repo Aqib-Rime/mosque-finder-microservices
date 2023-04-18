@@ -8,6 +8,22 @@ services:
     command: redis-server --save 20 1 --loglevel warning --requirepass redis-hello-2612
     volumes:
       - cache:/data
+
+  db:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: backend
+      MYSQL_USER: rime
+      MYSQL_PASSWORD: rime
+    ports:
+      - "3306:3306"
+    volumes:
+      - db-data:/var/lib/mysql
+
 volumes:
   cache:
     driver: local
+  db-data:

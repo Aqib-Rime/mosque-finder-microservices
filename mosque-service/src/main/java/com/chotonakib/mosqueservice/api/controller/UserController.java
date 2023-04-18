@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
     private final UserService userService;
 
-    @PostMapping("/add")
-    ResponseEntity<Boolean> addUser(@RequestBody @Valid UserInfoEntityDto dto) {
+    @PostMapping("/register")
+    ResponseEntity<Boolean> registerUser(@RequestBody @Valid UserInfoEntityDto dto) {
         userService.addUser(dto);
         return ResponseEntity.ok(true);
     }
