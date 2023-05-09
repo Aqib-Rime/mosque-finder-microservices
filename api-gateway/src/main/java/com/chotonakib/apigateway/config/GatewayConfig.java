@@ -27,7 +27,7 @@ public class GatewayConfig {
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder, RedisRateLimiter redisRateLimiter, ServerAuthFilter serverAuthFilter) {
         return builder.routes()
-                .route(r -> r.path("/register")
+                .route(r -> r.path("/user/register")
                         .filters(f -> f.requestRateLimiter(config -> config.setRateLimiter(redisRateLimiter)))
                         .uri("http://localhost:8081"))
                 .route(r -> r.path("/**")
