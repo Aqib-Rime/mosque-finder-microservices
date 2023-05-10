@@ -4,11 +4,11 @@ This project demonstrate the implementation of backend microservices to support 
 
 ## Features
 
-* User registration and login with JWT authentication
-* Password encryption using BCrypt
-* Logout mechanism
+* User registration and access with JWT authorization
+* Get nearby mosques in a circle
+* Notification service
 * Refresh token
-* api to add mosque and find nearby mosques
+* api to communicate with mosques
 * Rate limiting the request with Redis
 
 ## Technologies
