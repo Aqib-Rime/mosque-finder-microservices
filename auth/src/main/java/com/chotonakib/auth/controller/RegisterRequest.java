@@ -1,20 +1,19 @@
 package com.chotonakib.auth.controller;
 
-import com.chotonakib.auth.model.entity.Role;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 public class RegisterRequest {
-
-  private String firstname;
-  private String lastname;
-  private String email;
-  private String password;
-  private Role role;
+  @NotNull
+  private final String userName;
+  private final String userDisplayName;
+  private final String userPhotoUrl;
+  private final Integer userAwardPoint;
+  @NotNull
+  private final String email;
 }
