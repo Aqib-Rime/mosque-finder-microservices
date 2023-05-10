@@ -9,7 +9,7 @@ services:
     volumes:
       - cache:/data
 
-  db:
+  db-mosque:
     image: mysql
     command: --default-authentication-plugin=mysql_native_password
     restart: always
@@ -21,9 +21,49 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - db-data:/var/lib/mysql
+      - mosque-db-data:/var/lib/mysql/
+
+  db-auth:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: auth
+      MYSQL_USER: rime
+      MYSQL_PASSWORD: rime
+    ports:
+      - "3307:3306"
+    volumes:
+      - auth-db-data:/var/lib/mysql/
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    container_name: zookeeper
+    hostname: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    container_name: kafka
+    hostname: kafka
+    ports:
+      - "9092:9092"
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 
 volumes:
   cache:
     driver: local
-  db-data:
+  auth-db-data:
+  mosque-db-data:

@@ -9,6 +9,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -48,6 +49,10 @@ public class UserInfoEntity implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @ToString.Exclude
+    @OneToMany(mappedBy = "userInfoEntity", orphanRemoval = true)
+    private List<Token> tokens = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {

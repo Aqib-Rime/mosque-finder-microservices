@@ -7,10 +7,12 @@ import com.chotonakib.auth.model.entity.UserInfoEntity;
 import com.chotonakib.auth.repository.TokenRepository;
 import com.chotonakib.auth.repository.UserRepository;
 import com.chotonakib.auth.service.JwtService;
+import com.chotonakib.auth.service.KafkaProducer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,6 +29,9 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final KafkaProducer kafkaProducer;
+    @Value("${user.topic.name}")
+    private String USER_TOPIC;
 
     public AuthenticationResponse register(RegisterRequest request) {
         var user = UserInfoEntity.builder()
@@ -40,6 +45,7 @@ public class AuthenticationService {
         var jwtToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
         saveUserToken(savedUser, jwtToken);
+        kafkaProducer.sendMessage(USER_TOPIC, savedUser);
         return AuthenticationResponse.builder()
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken)
@@ -67,7 +73,7 @@ public class AuthenticationService {
 
     private void saveUserToken(UserInfoEntity user, String jwtToken) {
         var token = Token.builder()
-                .user(user)
+                .userInfoEntity(user)
                 .token(jwtToken)
                 .tokenType(TokenType.BEARER)
                 .expired(false)
