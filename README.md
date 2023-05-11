@@ -56,5 +56,5 @@ mvn spring-boot:run
 
 1. [x] Add the authentication with JWT
 2. [x] Add endpoints to add, remove, find and modify mosque information.
-3. [ ] Add kafka message broker to communicate with services asynchronously.
+3. [x] Add kafka message broker to communicate with services asynchronously.
 4. [ ] Implement Notification service
